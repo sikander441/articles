@@ -24,7 +24,7 @@ const login  = async (email,password) => {
 
 }
 
-const signUp = async (email, password ,firstName , lastName) => {
+const signUp = async (email, password ,firstName , lastName, isAdmin) => {
 
 
     if(!email || !password || !firstName || !lastName)
@@ -38,7 +38,8 @@ const signUp = async (email, password ,firstName , lastName) => {
         email,
         password,
         FirstName:firstName,
-        LastName:lastName
+        LastName:lastName,
+        isAdmin
     });
 
     user.password = await bcrypt.hash(user.password, 10);

@@ -1,12 +1,20 @@
 require('dotenv').config()
-const app = require('./express')
+
 const mongoose = require('mongoose')
+var fs = require('fs'); 
+var path = require('path'); 
+var multer = require('multer'); 
 
-
+const app = require('./express')
 const port=process.env.PORT || 3000
 
 const userRouter = require('./src/routers/user')
+const articleRouter = require('./src/routers/article')
+
+
 app.use('/user',userRouter);
+app.use('/api/v1',articleRouter)
+
 
 mongoose.connection.on('connected', () => {
   
