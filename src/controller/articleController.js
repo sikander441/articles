@@ -119,11 +119,66 @@ const getArticleById = async (articleId,isLoggedIn=false) => {
     return article
 }
 
+const tagArticleById = async ( articleId , tags ) => {
+    if( !articleId || !tags )
+     throw errorCodes.ARGUMENTSMISSING
+
+     const article = await articleModel.findOne({_id:articleId});
+
+     if(!article)
+      throw errorCodes.ARTICLENOTFOUND
+
+     tags.forEach( tag => {
+         article.tags.indexOf(tag) == -1 ? article.tags.push(tag):null;
+     })
+
+     await article.save();
+     return article;
+    
+}
+
+const getRelatedArticles  = async (articleId) => {
+
+    if(!articleId)
+     throw errorCodes.ARGUMENTSMISSING
+
+     const sourceArticle = await articleModel.findOne({_id:articleId});
+     if(!sourceArticle)
+      throw errorCodes.ARTICLENOTFOUND
+
+    var relatedArticles = []
+    const articles = await articleModel.find().select("_id tags");
+
+    sourceArticle.tags.forEach( tag => dict[tag]=true )
+    console.log(dict)
+    
+    for(var i=0; i<articles.length; i++ )
+    {
+
+       
+        if(articles[i]._id.equals(sourceArticle._id) )
+         continue;
+        
+        var countMatches = 0;
+        
+        articles[i].tags.forEach ( tag => {
+           
+            if(dict[tag] == true)
+             countMatches++;
+        })
+        if(countMatches > 0)
+         relatedArticles.push({_id:articles[i]._id , matchingTagsCount: countMatches })
+    }
+    return relatedArticles.sort( (a,b) => b.matchingTagsCount - a.matchingTagsCount);
+
+}
 module.exports = {
     createTopic,
     getAllTopics,
     createArticle,
     updateArticle,
     getArticlesByTopic,
-    getArticleById
+    getArticleById,
+    tagArticleById,
+    getRelatedArticles
 }

@@ -12,6 +12,6 @@ module.exports = function(req, res, next) {
     req.loggedIn = true;
     next();
   } catch (ex) {
-    res.status(400).send("Invalid token.");
+    res.status(400).send({status:'failure',message:"Invalid token. Please Log in"});
   }
 };

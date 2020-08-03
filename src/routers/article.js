@@ -80,10 +80,23 @@ router.post('/createTopic',auth,isLoggedIn,isAdmin,upload.single('image'),async 
 
        try{
         const article = await articleController.getArticleById(articleId,isLoggedIn)
-        res.send({status:'success',article})
+        const relatedArticles = await articleController.getRelatedArticles(articleId)
+
+        res.send({status:'success',article,relatedArticles})
    }catch(error){
         res.status(400).send({status:'failure',message:error.message})
    }
    })
 
+   router.post('/associateTagstoArticle' , auth , async (req,res) => {
+       const tags = req.body.tags;
+       const articleId = req.body.id
+
+       try{
+            const article = await articleController.tagArticleById(articleId , tags)
+            res.send({status:'success',article})
+        }catch(error){
+                res.status(400).send({status:'failure',message:error.message})
+        }
+   })
   module.exports = router;
