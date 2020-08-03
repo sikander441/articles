@@ -13,6 +13,15 @@ const errorCodes = {
     },
     USEREXISTS:{
         message:'User already registered.'
+    },
+    TOPICDOESNOTEXISTS:{
+        message:'Topic with given id does not exists'
+    },
+    ARTICLENOTFOUND:{
+        message:'Article with given id does not exists'
+    },
+    ILLEGALARTICLEACCESS:{
+        message:'Please log in to access the article'
     }
 
 }

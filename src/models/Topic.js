@@ -8,7 +8,7 @@ const topicSchema = new mongoose.Schema({
     img : {
         data: Buffer,
         contentType: String
-    }
+    },
   });
   
 

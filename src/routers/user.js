@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const express = require("express");
 
 const auth = require("../middleware/auth");
+const isLoggedIn = require('../middleware/isLoggedIn')
 const userController = require('../controller/userController');
 const { errorCodes } = require("../constants");
 
@@ -43,7 +44,7 @@ router.post('/signup' , async (req,res) => {
 })
 
 
-router.get("/current", auth, async (req, res) => {
+router.get("/current", auth,isLoggedIn ,async (req, res) => {
   console.log('here')
    try{
 

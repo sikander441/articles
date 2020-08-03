@@ -5,12 +5,13 @@ const auth = require("../middleware/auth");
 const isAdmin = require('../middleware/isAdmin')
 const { errorCodes } = require("../constants");
 const articleController = require('../controller/articleController')
+const isLoggedIn = require('../middleware/isLoggedIn')
 
 
 const router = express.Router();
 
 
-router.post('/createTopic',auth,isAdmin,upload.single('image'),async (req,res) =>{
+router.post('/createTopic',auth,isLoggedIn,isAdmin,upload.single('image'),async (req,res) =>{
     
     if(!req.file)
     {
@@ -25,14 +26,64 @@ router.post('/createTopic',auth,isAdmin,upload.single('image'),async (req,res) =
     }
 })
 
- router.get('/getAllTopics' , auth ,isAdmin , async (req,res) => {
-
+ router.get('/getAllTopics' ,  async (req,res) => {
+    const _id = req.query.id
     try{
-        const topics = await articleController.getAllTopics()
+        const topics = await articleController.getAllTopics(_id)
         res.send({status:'success', topics})
     }catch(error){
         res.status(400).send({status:'failure',message:error.message})
     }
  })
+
+  router.post('/createArticle' ,auth,isLoggedIn, isAdmin ,upload.single('image'), async (req,res) => {
+    
+    const data = req.body;
+    try{
+        await  articleController.createArticle(data.topicId, data.title, data.content, data.isFeatured, req.file?req.file.filename:undefined);
+        res.send({status:'success',message:'Succesfully created article'})
+      }catch(error){
+          res.send({status:'failure',message:error.message})
+      }
+  })
+
+
+   router.patch('/updateArticle' ,auth ,isLoggedIn, isAdmin, upload.single('image'), async (req,res) => {
+      
+        const data = req.body;
+        const articleId = req.body.articleId
+        
+       try{
+            await articleController.updateArticle(articleId,data,req.file?req.file.filename:undefined);
+            res.send({status:'success',message:'Succesfully Updated article'})
+        }catch(error){
+           res.send({status:'failure',message:error.message})
+       }
+   })
+
+
+   router.get('/getArticlesByTopic',auth, async (req,res) => {
+    
+    const topicId = req.query.topicId
+       try{
+            const articles = await articleController.getArticlesByTopic(topicId)
+            res.send({status:'success',count:articles.length,articles})
+       }catch(error){
+            res.status(400).send({status:'failure',message:error.message})
+       }
+   })
+
+
+   router.get('/getArticleById', auth ,async (req,res) => {
+       const articleId = req.query.id;
+       const isLoggedIn = req.loggedIn
+
+       try{
+        const article = await articleController.getArticleById(articleId,isLoggedIn)
+        res.send({status:'success',article})
+   }catch(error){
+        res.status(400).send({status:'failure',message:error.message})
+   }
+   })
 
   module.exports = router;
