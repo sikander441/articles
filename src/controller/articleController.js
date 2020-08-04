@@ -25,9 +25,9 @@ const createTopic = async (name,filename) => {
 const getAllTopics = async (_id) => {
    
     if(_id)
-     return await topicModel.find({_id})
+     return await topicModel.find({_id}).select("_id name")
     else
-     return await topicModel.find()
+     return await topicModel.find().select("_id name")
 }
 
 const createArticle = async (topicId , title, content, isFeatured ,image) => {
@@ -148,7 +148,8 @@ const getRelatedArticles  = async (articleId) => {
 
     var relatedArticles = []
     const articles = await articleModel.find().select("_id tags");
-
+    
+    dict = {}
     sourceArticle.tags.forEach( tag => dict[tag]=true )
     console.log(dict)
     
