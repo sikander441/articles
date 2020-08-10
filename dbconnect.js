@@ -5,7 +5,7 @@ mongoose.connection.on('error',err=>{
   console.log('Failed to connect to mongo DB server ',err)
 });
 mongoose.connection.on('connecting',()=>{
-  console.log('Connecting to database server ')
+  console.log('Connecting to database server :' + process.env.DB_URL)
 });
 
 

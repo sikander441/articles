@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config({ path: './.env_node'})
 
 const mongoose = require('mongoose')
 var fs = require('fs'); 
